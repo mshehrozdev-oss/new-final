@@ -1,15 +1,18 @@
-export default async function handler(req, res) {
+import express from "express";
+import fetch from "node-fetch";
+
+const app = express();
+
+const SHOP = process.env.SHOP; // e.g. "white-boutique-sa.myshopify.com"
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN; // Admin API access token
+const REFILL_VARIANT_ID = "8084838154410";
+const ELIGIBLE_TAG = "refill_eligible";
+
+app.get("/refill/check", async (req, res) => {
   try {
     const emailRaw = (req.query.email || "").toString().trim();
     const email = emailRaw.toLowerCase();
-
-    if (!email) return res.status(400).json({ ok: false, message: "Email is required" });
-
-    const SHOP = process.env.SHOP;
-    const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
-
-    const REFILL_VARIANT_ID = "8084838154410";
-    const ELIGIBLE_TAG = "refill_eligible";
+    if (!email) return res.json({ ok: false, message: "Email is required" });
 
     const endpoint = `https://${SHOP}/admin/api/2025-01/graphql.json`;
 
@@ -50,6 +53,9 @@ export default async function handler(req, res) {
       checkoutUrl: `/cart/${REFILL_VARIANT_ID}:1?checkout`
     });
   } catch (e) {
-    return res.status(500).json({ ok: false, message: "Server error" });
+    return res.json({ ok: false, message: "Server error" });
   }
-}
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("running on", PORT));

@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     if (json.errors) {
       return res.status(500).json({ ok: false, message: "Shopify GraphQL error", errors: json.errors });
     }
-
+  
     const customer = json?.data?.customers?.edges?.[0]?.node;
     if (!customer) return res.json({ ok: true, eligible: false, reason: "no_customer" });
 

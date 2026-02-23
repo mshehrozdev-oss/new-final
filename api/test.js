@@ -1,8 +1,5 @@
-module.exports = async (req, res) => {
+module.exports = (req, res) => {
+  res.statusCode = 200;
   res.setHeader("Content-Type", "application/json");
-  return res.status(200).json({
-    ok: true,
-    service: "refill-backend",
-    time: new Date().toISOString()
-  });
+  res.end(JSON.stringify({ ok: true, route: "/api/test" }));
 };
